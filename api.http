@@ -1,0 +1,163 @@
+### Register a new user
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Rijan Khatri",
+  "email": "rijan@test.com",
+  "password": "rijan123",
+  "phone": "9827782888",
+  "role": "tenant"
+}
+### Login user
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "rijan@test.com",
+  "password": "rijan123"
+}
+### Login with wrong password
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "rijan@test.com",
+  "password": "wrongpass"
+}
+### Create a room (protected route)
+POST http://localhost:5000/api/rooms
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDI3OTE5OSwiZXhwIjoxNzg0ODgzOTk5fQ.vqF6TAtR3LqsibtyPSYq33pD0TwLGGEWqpZm6EOcWws
+
+{
+  "title": "Cozy Single Room in Baneshwor",
+  "description": "Quiet room close to college, water and wifi included",
+  "type": "single",
+  "pricePerMonth": 8000,
+  "location": {
+    "city": "Kathmandu",
+    "district": "Baneshwor",
+    "address": "New Baneshwor, near ring road",
+    "latitude": 27.6935,
+    "longitude": 85.3435
+  },
+  "amenities": ["wifi", "water supply", "attached bathroom"],
+  "isAvailable": true
+}
+### Try creating room without token (should fail)
+POST http://localhost:5000/api/rooms
+Content-Type: application/json
+
+{
+  "title": "This should fail",
+  "type": "single",
+  "pricePerMonth": 5000,
+  "location": {
+    "city": "Kathmandu",
+    "address": "Somewhere"
+  }
+}
+### Get all rooms
+GET http://localhost:5000/api/rooms
+
+### Get all rooms filtered by city
+GET http://localhost:5000/api/rooms?city=Kathmandu
+
+### Get one room by ID
+GET http://localhost:5000/api/rooms/6a59f11c777f9b8d2a501829
+### Create a booking
+POST http://localhost:5000/api/bookings
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDI3OTE5OSwiZXhwIjoxNzg0ODgzOTk5fQ.vqF6TAtR3LqsibtyPSYq33pD0TwLGGEWqpZm6EOcWws
+
+{
+  "roomId": "6a59f11c777f9b8d2a501829",
+  "moveInDate": "2026-08-01",
+  "moveOutDate": "2026-11-01"
+}
+### Try booking same room with overlapping dates (should fail)
+POST http://localhost:5000/api/bookings
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDI4MDIxOSwiZXhwIjoxNzg0ODg1MDE5fQ.kUCN3DvH-gZbAUiAZDrhQswe0JPs9if2kQh5ZkydPY8
+
+{
+  "roomId": "6a59f11c777f9b8d2a501829",
+  "moveInDate": "2026-09-01",
+  "moveOutDate": "2026-12-01"
+}
+### Get my bookings
+GET http://localhost:5000/api/bookings/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDI4MDE0OSwiZXhwIjoxNzg0ODg0OTQ5fQ.bfBFd0m4h_9eGwvc2ViSsQqNujyTvRzItYEHMpFZY9E
+### Create a payment for the booking
+POST http://localhost:5000/api/payments
+Content-Type: application/json
+Authorization: Bearer PASTE_YOUR_TOKEN_HERE
+
+{
+  "bookingId": "6a59f37ecae172ade0b5741d",
+  "method": "esewa"
+}
+### Get my bookings (check status updated to confirmed)
+GET http://localhost:5000/api/bookings/my
+Authorization: Bearer PASTE_YOUR_TOKEN_HERE
+### Try paying same booking again (should fail)
+POST http://localhost:5000/api/payments
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDI4MDY2NCwiZXhwIjoxNzg0ODg1NDY0fQ.y_EnPaHT-0T4MRu4-B7nOaMord_7WH9L2rPLxb6JjrY
+
+{
+  "bookingId": "6a59f37ecae172ade0b5741d",
+  "method": "khalti"
+}
+### Create a review for confirmed booking
+POST http://localhost:5000/api/reviews
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDYxNDU3NSwiZXhwIjoxNzg1MjE5Mzc1fQ.WRlvo_xfJC-CvNm38zdi7h9sqe3dUe4sWqTil2W1y0g
+
+{
+  "bookingId": "6a59f37ecae172ade0b5741d",
+  "rating": 5,
+  "comment": "Great room, close to college and very clean!"
+}
+### Try reviewing same booking again (should fail)
+POST http://localhost:5000/api/reviews
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDYxNDY3MSwiZXhwIjoxNzg1MjE5NDcxfQ.SGeeDn8bNBAG2r-IyRy1dEjT8B2t9QgUzWFxrxNsAmo
+
+{
+  "bookingId": "6a59f37ecae172ade0b5741d",
+  "rating": 3,
+  "comment": "trying again"
+}
+### Get reviews for a room
+GET http://localhost:5000/api/reviews/room/6a59f11c777f9b8d2a501829
+### Update your own room
+PUT http://localhost:5000/api/rooms/6a59f11c777f9b8d2a501829
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDYxNTY5OCwiZXhwIjoxNzg1MjIwNDk4fQ.c1zV0I9BQ7GmbIlprKU0e74icyYwI6GogK_c8lo_qU4
+
+{
+  "pricePerMonth": 9000,
+  "isAvailable": false
+}
+
+### Get my rooms (owner view)
+GET http://localhost:5000/api/rooms/my
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDYxNTY5OCwiZXhwIjoxNzg1MjIwNDk4fQ.c1zV0I9BQ7GmbIlprKU0e74icyYwI6GogK_c8lo_qU4
+
+### Cancel a booking
+PUT http://localhost:5000/api/bookings/6a59f37ecae172ade0b5741d/cancel
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDYxNTY5OCwiZXhwIjoxNzg1MjIwNDk4fQ.c1zV0I9BQ7GmbIlprKU0e74icyYwI6GogK_c8lo_qU4
+### Upload image to room
+POST http://localhost:5000/api/rooms/6a59f11c777f9b8d2a501829/upload-image
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDYxNzU0OCwiZXhwIjoxNzg1MjIyMzQ4fQ.I9b3QDYxb2wqJXTKfMucigU5Fz1Qil2bkkj23thuOpw
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="image"; filename="test-image.webp"
+Content-Type: image/webp
+
+< ./test-image.webp
+------WebKitFormBoundary--
