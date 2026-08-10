@@ -152,7 +152,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDYxNTY5OCwiZXhwIjoxNzg1MjIwNDk4fQ.c1zV0I9BQ7GmbIlprKU0e74icyYwI6GogK_c8lo_qU4
 ### Upload image to room
 POST http://localhost:5000/api/rooms/6a59f11c777f9b8d2a501829/upload-image
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NDYxNzU0OCwiZXhwIjoxNzg1MjIyMzQ4fQ.I9b3QDYxb2wqJXTKfMucigU5Fz1Qil2bkkj23thuOpw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTllZDU2OTg2NTRiODllZTk4ZjkxMiIsImlhdCI6MTc4NTg0ODgxNywiZXhwIjoxNzg2NDUzNjE3fQ.sHFpZVzHV3fyC7mqyrHPedqgvPO4ip_yD5dsmmZvpfU
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
 
 ------WebKitFormBoundary
@@ -161,3 +161,15 @@ Content-Type: image/webp
 
 < ./test-image.webp
 ------WebKitFormBoundary--
+
+### Test register on LIVE server
+POST https://room-rental-jzo7.onrender.com/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "livetest@test.com",
+  "password": "test123",
+  "phone": "9800000000",
+  "role": "tenant"
+}
