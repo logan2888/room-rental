@@ -1,3 +1,4 @@
+import CreateRoom from "../pages/CreateRoom";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
@@ -6,6 +7,11 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
+import Rooms from "../pages/Rooms";
+import RoomDetail from "../pages/RoomDetail";
+import MyBookings from "../pages/MyBookings";
+import MyRooms from "../pages/MyRooms";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 function AppRoutes() {
     return (
@@ -29,6 +35,40 @@ function AppRoutes() {
                         path="/register"
                         element={<Register />}
                     />
+                    <Route
+    path="/rooms"
+    element={<Rooms />}
+/>
+
+<Route
+    path="/rooms/:id"
+    element={<RoomDetail />}
+/>
+<Route
+    path="/my-bookings"
+    element={
+      <ProtectedRoute requiredRole="tenant">
+        <MyBookings />
+      </ProtectedRoute>
+    }
+/>
+
+<Route
+    path="/my-rooms"
+    element={
+      <ProtectedRoute requiredRole="owner">
+        <MyRooms />
+      </ProtectedRoute>
+    }
+/>
+<Route
+    path="/create-room"
+    element={
+      <ProtectedRoute requiredRole="owner">
+        <CreateRoom />
+      </ProtectedRoute>
+    }
+/>
 
                 </Route>
 

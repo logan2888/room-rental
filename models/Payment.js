@@ -15,6 +15,14 @@ const paymentSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  platformFee: {
+    type: Number,
+    required: true
+  },
+  ownerAmount: {
+    type: Number,
+    required: true
+  },
   method: {
     type: String,
     enum: ['cash', 'esewa', 'khalti', 'bank_transfer'],
@@ -27,6 +35,9 @@ const paymentSchema = new mongoose.Schema({
   },
   paidAt: {
     type: Date
+  },
+  proofImage: {
+    type: String
   }
 }, {
   timestamps: true

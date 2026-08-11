@@ -1,5 +1,8 @@
 const Payment = require('../models/Payment');
 const Booking = require('../models/Booking');
+const Room = require('../models/Room');
+const User = require('../models/User');
+const { sendBookingConfirmation, sendOwnerBookingNotification } = require('./email');
 
 const createPayment = async (userId, { bookingId, method }) => {
   const booking = await Booking.findById(bookingId);
@@ -16,20 +19,54 @@ const createPayment = async (userId, { bookingId, method }) => {
     throw new Error('This booking is already paid');
   }
 
+  const room = await Room.findById(booking.room);
+  if (!room) {
+    throw new Error('Room not found');
+  }
+
+  const advancePercent = Number(process.env.ADVANCE_PERCENT) || 24;
+  const advanceAmount = Math.round(room.pricePerMonth * (advancePercent / 100));
+  const platformFee = Math.round(advanceAmount / 6);
+  const ownerAmount = advanceAmount - platformFee;
+
   const payment = await Payment.create({
     booking: bookingId,
     user: userId,
-    amount: booking.totalPrice,
+    amount: advanceAmount,
+    platformFee,
+    ownerAmount,
     method,
-    status: 'completed', // simulating instant success for now
+    status: 'completed',
     paidAt: new Date()
   });
 
-  // Update booking status to confirmed after payment
   booking.status = 'confirmed';
   await booking.save();
+
+  room.isAvailable = false;
+  await room.save();
+
+  const user = await User.findById(userId);
+  const owner = await User.findById(room.owner);
+
+  if (room && user) {
+    sendBookingConfirmation(user.email, booking, room)
+      .then(() => console.log('Tenant confirmation email sent'))
+      .catch(err => console.error('Failed to send tenant email:', err.message));
+  }
+
+  if (room && owner && user) {
+    sendOwnerBookingNotification(owner.email, user, booking, room)
+      .then(() => console.log('Owner notification email sent'))
+      .catch(err => console.error('Failed to send owner email:', err.message));
+  }
 
   return payment;
 };
 
-module.exports = { createPayment };
+const getPaymentByBooking = async (bookingId, userId) => {
+  const payment = await Payment.findOne({ booking: bookingId, user: userId });
+  return payment;
+};
+
+module.exports = { createPayment, getPaymentByBooking };
