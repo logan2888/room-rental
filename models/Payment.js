@@ -16,12 +16,10 @@ const paymentSchema = new mongoose.Schema({
     required: true
   },
   platformFee: {
-    type: Number,
-    required: true
+    type: Number
   },
   ownerAmount: {
-    type: Number,
-    required: true
+    type: Number
   },
   method: {
     type: String,
