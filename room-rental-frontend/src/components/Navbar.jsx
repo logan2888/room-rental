@@ -39,6 +39,11 @@ function Navbar() {
                   My Bookings
                 </Link>
               )}
+              {user.role === "owner" && (
+  <Link to="/owner-bookings" className="hover:text-yellow-300">
+    Bookings
+  </Link>
+)}
 
               <span className="text-sm">Hi, {user.name}</span>
 

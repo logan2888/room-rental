@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { register, login } = require('./auth');
 const { create, getAll, getOne, update, remove, getMyRooms, uploadImage } = require('./room');
-const { create: createBooking, getMyBookings, cancel: cancelBooking } = require('./booking');
+const { create: createBooking, getMyBookings, cancel: cancelBooking, getForOwner } = require('./booking');
 const { create: createPayment, uploadProof, getByBooking } = require('./payment');
 const { create: createReview, getForRoom } = require('./review');
 const { protect } = require('../middlewares/auth');
@@ -21,6 +21,7 @@ router.post('/rooms/:id/upload-image', protect, upload.single('image'), uploadIm
 
 router.post('/bookings', protect, createBooking);
 router.get('/bookings/my', protect, getMyBookings);
+router.get('/bookings/owner', protect, getForOwner);
 router.put('/bookings/:id/cancel', protect, cancelBooking);
 
 router.post('/payments', protect, createPayment);
