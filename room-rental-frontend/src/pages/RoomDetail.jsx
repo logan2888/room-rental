@@ -9,10 +9,11 @@ function RoomDetail() {
   const navigate = useNavigate();
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   const [moveInDate, setMoveInDate] = useState("");
   const [moveOutDate, setMoveOutDate] = useState("");
+  const [method, setMethod] = useState("esewa");
   const [bookingError, setBookingError] = useState("");
-  const [bookingSuccess, setBookingSuccess] = useState("");
   const [booking, setBooking] = useState(false);
 
   useEffect(() => {
@@ -22,26 +23,22 @@ function RoomDetail() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const handleBooking = async (e) => {
-    e.preventDefault();
-    setBookingError("");
-    setBookingSuccess("");
-
+  const openModal = () => {
     if (!user) {
       navigate("/login");
       return;
     }
+    setShowModal(true);
+  };
 
+  const handleBooking = async (e) => {
+    e.preventDefault();
+    setBookingError("");
     setBooking(true);
     try {
-      const res = await api.post("/bookings", {
-        roomId: id,
-        moveInDate,
-        moveOutDate,
-      });
-      setBookingSuccess(`Booking created! Total: Rs. ${res.data.booking.totalPrice}. Go to "My Bookings" to pay.`);
-      setMoveInDate("");
-      setMoveOutDate("");
+      const res = await api.post("/bookings", { roomId: id, moveInDate, moveOutDate });
+      navigate("/my-bookings");
+      alert(`Booking created! Total: Rs. ${res.data.booking.totalPrice}. Go to My Bookings to pay.`);
     } catch (err) {
       setBookingError(err.response?.data?.message || "Booking failed");
     } finally {
@@ -52,81 +49,154 @@ function RoomDetail() {
   if (loading) return <div className="text-center py-20">Loading...</div>;
   if (!room) return <div className="text-center py-20">Room not found</div>;
 
+  const advancePercent = 24;
+  const platformFee = Math.round(room.pricePerMonth * (advancePercent / 100) / 6);
+
   return (
-    <div className="max-w-4xl mx-auto py-12 px-4">
-      {room.images.length > 0 && (
-        <img src={room.images[0]} alt={room.title} className="w-full h-96 object-cover rounded-lg mb-6" />
-      )}
+    <div className="max-w-6xl mx-auto py-12 px-4 grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div className="md:col-span-2">
+        {room.images.length > 0 ? (
+          <img
+            src={room.images[0].replace('/upload/', '/upload/w_900,q_auto/')}
+            alt={room.title}
+            className="w-full h-96 object-cover rounded-2xl mb-6"
+          />
+        ) : (
+          <div className="w-full h-96 bg-gray-100 rounded-2xl mb-6 flex items-center justify-center text-gray-400">
+            No image
+          </div>
+        )}
 
-      <h1 className="text-3xl font-bold">{room.title}</h1>
-      <p className="text-gray-600 mt-1">{room.location.address}, {room.location.city}</p>
-      <p className="text-2xl font-semibold mt-4">Rs. {room.pricePerMonth}/month</p>
+        <p className="text-sm text-gray-500 flex items-center gap-1">
+          📍 {room.location.address}, {room.location.city}
+        </p>
+        <h1 className="text-3xl font-bold mt-2 text-gray-900">{room.title}</h1>
 
-      <p className="mt-4">{room.description}</p>
+        <p className="mt-4 text-gray-700">{room.description}</p>
 
-      <div className="mt-4">
-        <h3 className="font-bold mb-2">Amenities</h3>
-        <ul className="flex flex-wrap gap-2">
+        <div className="mt-6 flex flex-wrap gap-2">
           {room.amenities.map((a, i) => (
-            <li key={i} className="bg-gray-100 px-3 py-1 rounded-full text-sm">{a}</li>
+            <span key={i} className="bg-gray-100 px-4 py-1.5 rounded-full text-sm font-medium text-gray-700">
+              {a}
+            </span>
           ))}
-        </ul>
-      </div>
-
-      <div className="mt-6 text-sm text-gray-500">
-        Listed by {room.owner.name} ({room.owner.phone})
-      </div>
-
-      {room.isAvailable ? (
-        <div className="mt-8 border-t pt-6">
-          <h2 className="text-xl font-bold mb-4">Book this room</h2>
-
-          {bookingError && (
-            <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
-              {bookingError}
-            </div>
-          )}
-
-          {bookingSuccess && (
-            <div className="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
-              {bookingSuccess}
-            </div>
-          )}
-
-          <form onSubmit={handleBooking} className="flex flex-col gap-4 max-w-sm">
-            <label className="text-sm font-medium">
-              Move-in date
-              <input
-                type="date"
-                value={moveInDate}
-                onChange={(e) => setMoveInDate(e.target.value)}
-                required
-                className="border rounded px-4 py-2 w-full mt-1"
-              />
-            </label>
-
-            <label className="text-sm font-medium">
-              Move-out date
-              <input
-                type="date"
-                value={moveOutDate}
-                onChange={(e) => setMoveOutDate(e.target.value)}
-                required
-                className="border rounded px-4 py-2 w-full mt-1"
-              />
-            </label>
-
-            <button
-              type="submit"
-              disabled={booking}
-              className="bg-blue-700 text-white rounded px-4 py-2 disabled:opacity-50"
-            >
-              {booking ? "Booking..." : user ? "Book Now" : "Login to Book"}
-            </button>
-          </form>
         </div>
-      ) : (
-        <div className="mt-8 text-red-600 font-medium">This room is currently unavailable.</div>
+
+        <div className="mt-8 border-t pt-6 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-full bg-teal-800 text-white flex items-center justify-center font-bold">
+            {room.owner.name.charAt(0)}
+          </div>
+          <div>
+            <p className="font-semibold text-gray-900">{room.owner.name}</p>
+            <p className="text-sm text-gray-500">{room.owner.phone}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="md:col-span-1">
+        <div className="border rounded-2xl p-6 shadow-sm sticky top-6 bg-white">
+          <p className="text-2xl font-bold text-teal-800">
+            Rs. {room.pricePerMonth.toLocaleString()}
+            <span className="text-base font-normal text-gray-500"> / month</span>
+          </p>
+
+          <span className={`inline-block mt-2 text-xs font-semibold px-3 py-1 rounded-full ${
+            room.isAvailable ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+          }`}>
+            {room.isAvailable ? "Available now" : "Not available"}
+          </span>
+
+          <div className="bg-gray-50 rounded-xl p-3 text-sm text-gray-600 mt-4 flex gap-2">
+            🛡️ Your request is private until the owner responds. No payment is needed to request.
+          </div>
+
+          <button
+            onClick={openModal}
+            disabled={!room.isAvailable}
+            className="w-full bg-orange-400 hover:bg-orange-500 text-white font-semibold py-3 rounded-xl mt-4 disabled:opacity-50"
+          >
+            📅 {room.isAvailable ? "Request this place" : "Not available"}
+          </button>
+        </div>
+      </div>
+
+      {showModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-700"
+            >
+              ✕
+            </button>
+
+            <p className="text-orange-500 text-xs font-bold tracking-wide">ALMOST THERE</p>
+            <h2 className="text-2xl font-bold mt-1 text-gray-900">Request {room.title}</h2>
+
+            {bookingError && (
+              <div className="bg-red-100 text-red-700 px-4 py-2 rounded-lg mt-4 text-sm">
+                {bookingError}
+              </div>
+            )}
+
+            <form onSubmit={handleBooking} className="mt-6 flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <label className="text-sm font-medium text-gray-700">
+                  Move-in date
+                  <input
+                    type="date"
+                    value={moveInDate}
+                    onChange={(e) => setMoveInDate(e.target.value)}
+                    required
+                    className="border rounded-lg px-3 py-2 w-full mt-1"
+                  />
+                </label>
+
+                <label className="text-sm font-medium text-gray-700">
+                  Move-out date
+                  <input
+                    type="date"
+                    value={moveOutDate}
+                    onChange={(e) => setMoveOutDate(e.target.value)}
+                    required
+                    className="border rounded-lg px-3 py-2 w-full mt-1"
+                  />
+                </label>
+              </div>
+
+              <label className="text-sm font-medium text-gray-700">
+                How would you like to pay?
+                <select
+                  value={method}
+                  onChange={(e) => setMethod(e.target.value)}
+                  className="border rounded-lg px-3 py-2 w-full mt-1"
+                >
+                  <option value="esewa">eSewa</option>
+                  <option value="khalti">Khalti</option>
+                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value="cash">Cash</option>
+                </select>
+              </label>
+
+              <div className="bg-orange-50 rounded-xl p-4 text-sm flex justify-between">
+                <span className="text-gray-600">Monthly rent</span>
+                <span className="font-bold text-gray-900">Rs. {room.pricePerMonth.toLocaleString()}</span>
+              </div>
+              <div className="bg-orange-50 -mt-4 rounded-b-xl px-4 pb-4 text-sm flex justify-between">
+                <span className="text-gray-600">Platform fee</span>
+                <span className="font-semibold text-teal-700">Rs. {platformFee} (shown before payment)</span>
+              </div>
+
+              <button
+                type="submit"
+                disabled={booking}
+                className="bg-teal-800 hover:bg-teal-900 text-white font-semibold py-3 rounded-xl disabled:opacity-50"
+              >
+                {booking ? "Sending..." : "✓ Send request"}
+              </button>
+            </form>
+          </div>
+        </div>
       )}
     </div>
   );

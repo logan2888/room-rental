@@ -1,41 +1,83 @@
-import { FaSearch, FaMapMarkerAlt } from "react-icons/fa";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Hero() {
-  return (
-    <section className="bg-gradient-to-r from-blue-700 to-indigo-800 text-white py-20">
-      <div className="max-w-7xl mx-auto px-6">
+  const [search, setSearch] = useState("");
+  const [city, setCity] = useState("");
+  const [budget, setBudget] = useState("");
+  const navigate = useNavigate();
 
-        <h1 className="text-5xl font-bold mb-6">
-          Find Your Perfect Room
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams();
+    if (search) params.set("q", search);
+    if (city) params.set("city", city);
+    if (budget) params.set("maxPrice", budget);
+    navigate(`/rooms?${params.toString()}`);
+  };
+
+  return (
+    <section className="bg-teal-800 rounded-b-[3rem] px-6 py-16 md:py-24">
+      <div className="max-w-5xl mx-auto">
+        <span className="inline-block bg-teal-700 text-teal-100 text-xs font-semibold px-4 py-1.5 rounded-full mb-6">
+          ✨ A BETTER WAY HOME
+        </span>
+
+        <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight">
+          Find your corner
+          <br />
+          <span className="text-orange-300">in Nepal.</span>
         </h1>
 
-        <p className="text-xl mb-10">
-          Discover verified rooms for rent across Nepal.
+        <p className="text-teal-100 text-lg mt-6 max-w-xl">
+          Monthly rooms and apartments in the places you already know and love —
+          with real people, clear rent, and no guesswork.
         </p>
 
-        <div className="bg-white rounded-xl p-6 shadow-lg">
+        <form
+          onSubmit={handleSearch}
+          className="bg-white rounded-2xl p-3 mt-10 flex flex-col md:flex-row gap-3 shadow-lg"
+        >
+          <input
+            type="text"
+            placeholder="Search area, landmark or room"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1 px-4 py-3 rounded-xl outline-none"
+          />
 
-          <div className="flex flex-col md:flex-row gap-4">
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="px-4 py-3 rounded-xl outline-none border md:border-none bg-gray-50"
+          >
+            <option value="">Any city</option>
+            <option value="Kathmandu">Kathmandu</option>
+            <option value="Lalitpur">Lalitpur</option>
+            <option value="Bhaktapur">Bhaktapur</option>
+            <option value="Pokhara">Pokhara</option>
+            <option value="Biratnagar">Biratnagar</option>
+          </select>
 
-            <div className="flex items-center border rounded-lg px-4 flex-1">
-              <FaMapMarkerAlt className="text-gray-500" />
+          <select
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+            className="px-4 py-3 rounded-xl outline-none border md:border-none bg-gray-50"
+          >
+            <option value="">Any budget</option>
+            <option value="10000">Under Rs. 10,000</option>
+            <option value="20000">Under Rs. 20,000</option>
+            <option value="30000">Under Rs. 30,000</option>
+            <option value="50000">Under Rs. 50,000</option>
+          </select>
 
-              <input
-                type="text"
-                placeholder="Enter location"
-                className="w-full p-3 outline-none text-black"
-              />
-            </div>
-
-            <button className="bg-blue-700 hover:bg-blue-800 text-white px-6 rounded-lg flex items-center justify-center gap-2">
-              <FaSearch />
-              Search
-            </button>
-
-          </div>
-
-        </div>
-
+          <button
+            type="submit"
+            className="bg-orange-400 hover:bg-orange-500 text-white font-semibold px-8 py-3 rounded-xl transition"
+          >
+            Search
+          </button>
+        </form>
       </div>
     </section>
   );

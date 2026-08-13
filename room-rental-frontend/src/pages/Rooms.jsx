@@ -1,20 +1,28 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import api from "../services/api";
 
 function Rooms() {
+  const [searchParams] = useSearchParams();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [city, setCity] = useState("");
+  const [city, setCity] = useState(searchParams.get("city") || "");
 
   useEffect(() => {
     fetchRooms();
   }, []);
 
-  const fetchRooms = async (filterCity = "") => {
+  const fetchRooms = async (filterCity) => {
     setLoading(true);
     try {
-      const params = filterCity ? { city: filterCity } : {};
+      const params = {};
+      const cityVal = filterCity !== undefined ? filterCity : searchParams.get("city");
+      const maxPrice = searchParams.get("maxPrice");
+      const q = searchParams.get("q");
+      if (cityVal) params.city = cityVal;
+      if (maxPrice) params.maxPrice = maxPrice;
+      if (q) params.q = q;
+
       const res = await api.get("/rooms", { params });
       setRooms(res.data.rooms);
     } catch (err) {
@@ -33,7 +41,7 @@ function Rooms() {
 
   return (
     <div className="max-w-6xl mx-auto py-12 px-4">
-      <h1 className="text-4xl font-bold mb-6">Available Rooms</h1>
+      <h1 className="text-4xl font-bold mb-6 text-gray-900">Available Rooms</h1>
 
       <form onSubmit={handleSearch} className="flex gap-2 mb-8">
         <input
@@ -41,38 +49,38 @@ function Rooms() {
           placeholder="Search by city..."
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          className="border rounded px-4 py-2 flex-1"
+          className="border rounded-xl px-4 py-2 flex-1"
         />
-        <button type="submit" className="bg-black text-white px-4 py-2 rounded">
+        <button type="submit" className="bg-teal-800 text-white px-6 py-2 rounded-xl">
           Search
         </button>
       </form>
 
       {rooms.length === 0 ? (
-        <p>No rooms found.</p>
+        <p className="text-gray-500">No rooms found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {rooms.map((room) => (
             <Link
               to={`/rooms/${room._id}`}
               key={room._id}
-              className="border rounded-lg overflow-hidden hover:shadow-lg transition"
+              className="border rounded-2xl overflow-hidden hover:shadow-xl transition bg-white"
             >
               {room.images.length > 0 ? (
                 <img
-                  src={room.images[0]}
+                  src={room.images[0].replace('/upload/', '/upload/w_500,q_auto/')}
                   alt={room.title}
                   className="w-full h-48 object-cover"
                 />
               ) : (
-                <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+                <div className="w-full h-48 bg-gray-100 flex items-center justify-center text-gray-400">
                   No image
                 </div>
               )}
               <div className="p-4">
-                <h2 className="font-bold text-lg">{room.title}</h2>
-                <p className="text-sm text-gray-600">{room.location.city}</p>
-                <p className="font-semibold mt-2">Rs. {room.pricePerMonth}/month</p>
+                <h2 className="font-bold text-lg text-gray-900">{room.title}</h2>
+                <p className="text-sm text-gray-500">{room.location.city}</p>
+                <p className="font-semibold mt-2 text-teal-800">Rs. {room.pricePerMonth}/month</p>
               </div>
             </Link>
           ))}

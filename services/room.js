@@ -17,6 +17,16 @@ const getAllRooms = async (filters = {}) => {
   if (filters.maxPrice) {
     query.pricePerMonth = { $lte: filters.maxPrice };
   }
+  if (filters.q) {
+    const searchRegex = new RegExp(filters.q, 'i');
+    query.$or = [
+      { title: searchRegex },
+      { description: searchRegex },
+      { 'location.address': searchRegex },
+      { 'location.district': searchRegex },
+      { 'location.city': searchRegex }
+    ];
+  }
 
   const rooms = await Room.find(query).populate('owner', 'name email phone');
   return rooms;
@@ -64,4 +74,5 @@ const getRoomsByOwner = async (ownerId) => {
   const rooms = await Room.find({ owner: ownerId });
   return rooms;
 };
+
 module.exports = { createRoom, getAllRooms, getRoomById, updateRoom, deleteRoom, getRoomsByOwner };
