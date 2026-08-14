@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -12,10 +13,21 @@ const protect = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.id;
+
+    const user = await User.findById(decoded.id);
+    req.userRole = user?.role;
+
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Invalid or expired token' });
   }
 };
 
-module.exports = { protect };
+const adminOnly = (req, res, next) => {
+  if (req.userRole !== 'admin') {
+    return res.status(403).json({ message: 'Admin access only' });
+  }
+  next();
+};
+
+module.exports = { protect, adminOnly };

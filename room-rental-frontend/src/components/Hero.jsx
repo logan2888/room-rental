@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import DistrictSelect from "./DistrictSelect";
 
 function Hero() {
   const [search, setSearch] = useState("");
@@ -46,18 +47,7 @@ function Hero() {
             className="flex-1 px-4 py-3 rounded-xl outline-none"
           />
 
-          <select
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className="px-4 py-3 rounded-xl outline-none border md:border-none bg-gray-50"
-          >
-            <option value="">Any city</option>
-            <option value="Kathmandu">Kathmandu</option>
-            <option value="Lalitpur">Lalitpur</option>
-            <option value="Bhaktapur">Bhaktapur</option>
-            <option value="Pokhara">Pokhara</option>
-            <option value="Biratnagar">Biratnagar</option>
-          </select>
+          <DistrictSelect value={city} onChange={setCity} />
 
           <select
             value={budget}

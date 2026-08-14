@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import DistrictSelect from "../components/DistrictSelect";
 
 function CreateRoom() {
   const [formData, setFormData] = useState({
@@ -129,8 +130,11 @@ function CreateRoom() {
           <option value="apartment">Apartment</option>
         </select>
         <input type="number" name="pricePerMonth" placeholder="Price per month (Rs.)" value={formData.pricePerMonth} onChange={handleChange} required className="border rounded px-4 py-2" />
-        <input type="text" name="city" placeholder="City" value={formData.city} onChange={handleChange} required className="border rounded px-4 py-2" />
-        <input type="text" name="district" placeholder="District" value={formData.district} onChange={handleChange} className="border rounded px-4 py-2" />
+        <DistrictSelect
+  value={formData.district}
+  onChange={(val) => setFormData({ ...formData, district: val, city: val })}
+/>
+<input type="text" name="city" placeholder="City / Area (e.g. specific place name)" value={formData.city} onChange={handleChange} required className="border rounded px-4 py-2" />
         <input type="text" name="address" placeholder="Full address" value={formData.address} onChange={handleChange} required className="border rounded px-4 py-2" />
         <input
           type="text"

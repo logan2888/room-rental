@@ -67,9 +67,9 @@ function RoomDetail() {
           </div>
         )}
 
-        <p className="text-sm text-gray-500 flex items-center gap-1">
-          📍 {room.location.address}, {room.location.city}
-        </p>
+       <p className="text-sm text-gray-500 flex items-center gap-1">
+         📍 {room.location.address}, {room.location.district ? `${room.location.district}, ` : ""}{room.location.city}
+       </p>
         <h1 className="text-3xl font-bold mt-2 text-gray-900">{room.title}</h1>
 
         <p className="mt-4 text-gray-700">{room.description}</p>
