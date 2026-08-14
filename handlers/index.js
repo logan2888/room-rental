@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { register, login } = require('./auth');
+const { register, login, forgotPassword, resetPasswordHandler } = require('./auth');
 const { create, getAll, getOne, update, remove, getMyRooms, uploadImage } = require('./room');
 const { create: createBooking, getMyBookings, cancel: cancelBooking, getForOwner } = require('./booking');
 const { create: createPayment, uploadProof, getByBooking } = require('./payment');
@@ -11,6 +11,8 @@ const upload = require('../config/multer');
 
 router.post('/auth/register', register);
 router.post('/auth/login', login);
+router.post('/auth/forgot-password', forgotPassword);
+router.post('/auth/reset-password', resetPasswordHandler);
 
 router.post('/rooms', protect, create);
 router.get('/rooms', getAll);

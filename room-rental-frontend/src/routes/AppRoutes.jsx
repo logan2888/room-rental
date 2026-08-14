@@ -13,6 +13,7 @@ import MyBookings from "../pages/MyBookings";
 import MyRooms from "../pages/MyRooms";
 import ProtectedRoute from "../components/ProtectedRoute";
 import OwnerBookings from "../pages/OwnerBookings";
+import AdminDashboard from "../pages/AdminDashboard";
 
 function AppRoutes() {
     return (
@@ -67,6 +68,14 @@ function AppRoutes() {
     element={
       <ProtectedRoute requiredRole="owner">
         <CreateRoom />
+      </ProtectedRoute>
+    }
+/>
+<Route
+    path="/admin"
+    element={
+      <ProtectedRoute requiredRole="admin">
+        <AdminDashboard />
       </ProtectedRoute>
     }
 />

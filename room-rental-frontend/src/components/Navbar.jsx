@@ -33,7 +33,11 @@ function Navbar() {
                   My Rooms
                 </Link>
               )}
-
+{user.role === "admin" && (
+  <Link to="/admin" className="hover:text-yellow-300 animate-bounce">
+    Admin
+  </Link>
+)}
               {user.role === "tenant" && (
                 <Link to="/my-bookings" className="hover:text-yellow-300 animate-bounce">
                   My Bookings
@@ -56,11 +60,11 @@ function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/login" className="hover:text-yellow-300">
+              <Link to="/login" className="hover:text-yellow-300 animate-bounce">
                 Login
               </Link>
 
-              <Link to="/register" className="hover:text-yellow-300">
+              <Link to="/register" className="hover:text-yellow-300 animate-bounce">
                 Register
               </Link>
             </>
