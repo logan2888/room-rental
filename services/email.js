@@ -1,12 +1,10 @@
-const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  family: 4,
+  host: 'smtp-relay.brevo.com',
+  port: 587,
+  secure: false,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+    user: process.env.BREVO_SMTP_LOGIN,
+    pass: process.env.BREVO_SMTP_KEY
   }
 });
 
@@ -15,7 +13,7 @@ const sendBookingConfirmation = async (toEmail, booking, room) => {
   const moveOut = new Date(booking.moveOutDate).toLocaleDateString();
 
   await transporter.sendMail({
-    from: `"Room Rental" <${process.env.EMAIL_USER}>`,
+   from: `"Room Rental" <${process.env.BREVO_SMTP_LOGIN}>`,
     to: toEmail,
     subject: `Booking Confirmed - ${room.title}`,
     html: `
@@ -37,7 +35,7 @@ const sendOwnerBookingNotification = async (ownerEmail, tenant, booking, room) =
   const moveOut = new Date(booking.moveOutDate).toLocaleDateString();
 
   await transporter.sendMail({
-    from: `"Room Rental" <${process.env.EMAIL_USER}>`,
+  from: `"Room Rental" <${process.env.BREVO_SMTP_LOGIN}>`,
     to: ownerEmail,
     subject: `New Booking - ${room.title}`,
     html: `
@@ -57,7 +55,7 @@ const sendOwnerBookingNotification = async (ownerEmail, tenant, booking, room) =
 
 const sendPasswordResetEmail = async (toEmail, resetLink) => {
   await transporter.sendMail({
-    from: `"Room Rental" <${process.env.EMAIL_USER}>`,
+  from: `"Room Rental" <${process.env.BREVO_SMTP_LOGIN}>`,
     to: toEmail,
     subject: 'Reset your Room Rental password',
     html: `
