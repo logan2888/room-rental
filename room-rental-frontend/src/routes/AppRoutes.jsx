@@ -14,6 +14,8 @@ import MyRooms from "../pages/MyRooms";
 import ProtectedRoute from "../components/ProtectedRoute";
 import OwnerBookings from "../pages/OwnerBookings";
 import AdminDashboard from "../pages/AdminDashboard";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 
 function AppRoutes() {
     return (
@@ -40,6 +42,15 @@ function AppRoutes() {
                     <Route
     path="/rooms"
     element={<Rooms />}
+/>
+<Route
+    path="/forgot-password"
+    element={<ForgotPassword />}
+/>
+
+<Route
+    path="/reset-password/:token"
+    element={<ResetPassword />}
 />
 
 <Route

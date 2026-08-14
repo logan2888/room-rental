@@ -53,7 +53,9 @@ const requestPasswordReset = async (email) => {
   await user.save();
 
   const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-  await sendPasswordResetEmail(user.email, resetLink);
+  sendPasswordResetEmail(user.email, resetLink)
+    .then(() => console.log('Password reset email sent'))
+    .catch(err => console.error('Failed to send reset email:', err.message));
 };
 
 const resetPassword = async (token, newPassword) => {

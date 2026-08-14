@@ -71,6 +71,11 @@ function Login() {
           Register
         </Link>
       </p>
+      <p className="mt-2 text-sm">
+  <Link to="/forgot-password" className="underline">
+    Forgot password?
+  </Link>
+</p>
     </div>
   );
 }
