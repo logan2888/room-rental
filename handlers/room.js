@@ -1,4 +1,4 @@
-const { createRoom, getAllRooms, getRoomById, updateRoom, deleteRoom, getRoomsByOwner } = require('../services/room');
+const { createRoom, getAllRooms, getRoomById, updateRoom, deleteRoom, getRoomsByOwner, removeRoomImage } = require('../services/room');
 const { validateRoom } = require('../validators/room');
 const Room = require('../models/Room');
 const create = async (req, res) => {
@@ -58,11 +58,10 @@ const getMyRooms = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 const uploadImage = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ message: 'No image uploaded' });
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ message: 'No images uploaded' });
     }
 
     const room = await Room.findById(req.params.id);
@@ -74,12 +73,22 @@ const uploadImage = async (req, res) => {
       return res.status(403).json({ message: 'You can only upload images to your own room' });
     }
 
-    room.images.push(req.file.path);
+    const newImageUrls = req.files.map(file => file.path);
+    room.images.push(...newImageUrls);
     await room.save();
 
-    res.status(200).json({ message: 'Image uploaded successfully', imageUrl: req.file.path, room });
+    res.status(200).json({ message: 'Images uploaded successfully', imageUrls: newImageUrls, room });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
-module.exports = { create, getAll, getOne, update, remove, getMyRooms, uploadImage };
+const deleteImage = async (req, res) => {
+  try {
+    const { imageUrl } = req.body;
+    const room = await removeRoomImage(req.params.id, req.userId, imageUrl);
+    res.status(200).json({ message: 'Image removed', room });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+module.exports = { create, getAll, getOne, update, remove, getMyRooms, uploadImage, deleteImage };

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
 
+
 function MyRooms() {
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -65,6 +66,9 @@ function MyRooms() {
               <button onClick={() => handleDelete(r._id)} className="bg-red-100 text-red-700 px-3 py-1 rounded text-sm">
                 Delete
               </button>
+              <Link to={`/edit-room/${r._id}`} className="bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm mr-2">
+  Edit
+</Link>
             </div>
           ))}
         </div>

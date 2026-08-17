@@ -74,5 +74,14 @@ const getRoomsByOwner = async (ownerId) => {
   const rooms = await Room.find({ owner: ownerId });
   return rooms;
 };
+const removeRoomImage = async (roomId, ownerId, imageUrl) => {
+  const room = await Room.findById(roomId);
+  if (!room) throw new Error('Room not found');
+  if (room.owner.toString() !== ownerId) throw new Error('You can only edit your own room');
 
-module.exports = { createRoom, getAllRooms, getRoomById, updateRoom, deleteRoom, getRoomsByOwner };
+  room.images = room.images.filter(img => img !== imageUrl);
+  await room.save();
+  return room;
+};
+
+module.exports = { createRoom, getAllRooms, getRoomById, updateRoom, deleteRoom, getRoomsByOwner, removeRoomImage };

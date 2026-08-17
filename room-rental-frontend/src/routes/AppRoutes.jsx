@@ -16,6 +16,7 @@ import OwnerBookings from "../pages/OwnerBookings";
 import AdminDashboard from "../pages/AdminDashboard";
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
+import EditRoom from "../pages/EditRoom";
 
 function AppRoutes() {
     return (
@@ -51,6 +52,14 @@ function AppRoutes() {
 <Route
     path="/reset-password/:token"
     element={<ResetPassword />}
+/>
+<Route
+    path="/edit-room/:id"
+    element={
+      <ProtectedRoute requiredRole="owner">
+        <EditRoom />
+      </ProtectedRoute>
+    }
 />
 
 <Route

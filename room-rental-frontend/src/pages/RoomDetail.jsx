@@ -16,11 +16,22 @@ function RoomDetail() {
   const [bookingError, setBookingError] = useState("");
   const [booking, setBooking] = useState(false);
 
+  const [reviews, setReviews] = useState([]);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewError, setReviewError] = useState("");
+  const [reviewSuccess, setReviewSuccess] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
+
   useEffect(() => {
     api.get(`/rooms/${id}`)
       .then((res) => setRoom(res.data.room))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
+
+    api.get(`/reviews/room/${id}`)
+      .then((res) => setReviews(res.data.reviews))
+      .catch((err) => console.error(err));
   }, [id]);
 
   const openModal = () => {
@@ -46,6 +57,28 @@ function RoomDetail() {
     }
   };
 
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    setReviewError("");
+    setReviewSuccess("");
+    setSubmittingReview(true);
+    try {
+      await api.post("/reviews", {
+        bookingId: prompt("Enter your booking ID for this room (from My Bookings):"),
+        rating: reviewRating,
+        comment: reviewComment,
+      });
+      setReviewSuccess("Review submitted!");
+      setReviewComment("");
+      const res = await api.get(`/reviews/room/${id}`);
+      setReviews(res.data.reviews);
+    } catch (err) {
+      setReviewError(err.response?.data?.message || "Failed to submit review");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
   if (loading) return <div className="text-center py-20">Loading...</div>;
   if (!room) return <div className="text-center py-20">Room not found</div>;
 
@@ -67,9 +100,9 @@ function RoomDetail() {
           </div>
         )}
 
-       <p className="text-sm text-gray-500 flex items-center gap-1">
-         📍 {room.location.address}, {room.location.district ? `${room.location.district}, ` : ""}{room.location.city}
-       </p>
+        <p className="text-sm text-gray-500 flex items-center gap-1">
+          📍 {room.location.address}, {room.location.district ? `${room.location.district}, ` : ""}{room.location.city}
+        </p>
         <h1 className="text-3xl font-bold mt-2 text-gray-900">{room.title}</h1>
 
         <p className="mt-4 text-gray-700">{room.description}</p>
@@ -90,6 +123,65 @@ function RoomDetail() {
             <p className="font-semibold text-gray-900">{room.owner.name}</p>
             <p className="text-sm text-gray-500">{room.owner.phone}</p>
           </div>
+        </div>
+
+        <div className="mt-10 border-t pt-6">
+          <h2 className="text-xl font-bold mb-4 text-gray-900">Reviews</h2>
+
+          {reviews.length === 0 ? (
+            <p className="text-gray-500 text-sm">No reviews yet.</p>
+          ) : (
+            <div className="flex flex-col gap-4 mb-6">
+              {reviews.map((r) => (
+                <div key={r._id} className="border rounded-xl p-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-gray-900">{r.user.name}</span>
+                    <span className="text-yellow-500">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span>
+                  </div>
+                  {r.comment && <p className="text-gray-600 text-sm mt-1">{r.comment}</p>}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {user && user.role === "tenant" && (
+            <div className="border rounded-xl p-4 bg-gray-50">
+              <h3 className="font-semibold mb-2 text-sm">Leave a review (only if you've completed a booking here)</h3>
+
+              {reviewError && <p className="text-red-600 text-sm mb-2">{reviewError}</p>}
+              {reviewSuccess && <p className="text-green-600 text-sm mb-2">{reviewSuccess}</p>}
+
+              <form onSubmit={handleReviewSubmit} className="flex flex-col gap-3">
+                <select
+                  value={reviewRating}
+                  onChange={(e) => setReviewRating(Number(e.target.value))}
+                  className="border rounded-lg px-3 py-2 text-sm"
+                >
+                  <option value={5}>5 - Excellent</option>
+                  <option value={4}>4 - Good</option>
+                  <option value={3}>3 - Okay</option>
+                  <option value={2}>2 - Poor</option>
+                  <option value={1}>1 - Terrible</option>
+                </select>
+
+                <textarea
+                  placeholder="Your comment"
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  className="border rounded-lg px-3 py-2 text-sm"
+                  rows="2"
+                />
+
+                <button
+                  type="submit"
+                  disabled={submittingReview}
+                  className="bg-teal-800 text-white rounded-lg px-4 py-2 text-sm disabled:opacity-50 w-fit"
+                >
+                  {submittingReview ? "Submitting..." : "Submit Review"}
+                </button>
+              </form>
+            </div>
+          )}
         </div>
       </div>
 
