@@ -33,21 +33,26 @@ function Navbar() {
                   My Rooms
                 </Link>
               )}
-{user.role === "admin" && (
-  <Link to="/admin" className="hover:text-yellow-300 animate-bounce">
-    Admin
-  </Link>
-)}
+              {user.role === "admin" && (
+                <Link to="/admin" className="hover:text-yellow-300 animate-bounce">
+                  Admin
+                </Link>
+              )}
               {user.role === "tenant" && (
                 <Link to="/my-bookings" className="hover:text-yellow-300 animate-bounce">
                   My Bookings
                 </Link>
               )}
               {user.role === "owner" && (
-  <Link to="/owner-bookings" className="hover:text-yellow-300 animate-bounce">
-    Bookings
-  </Link>
-)}
+                <Link to="/owner-bookings" className="hover:text-yellow-300 animate-bounce">
+                  Bookings
+                </Link>
+              )}
+              {user.role === "owner" && (
+                <Link to="/inquiries" className="hover:text-yellow-300 animate-bounce">
+                  Inquiries
+                </Link>
+              )}
 
               <span className="text-sm animate-bounce">Hi, {user.name}</span>
 

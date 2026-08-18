@@ -24,6 +24,11 @@ function RoomDetail() {
   const [reviewSuccess, setReviewSuccess] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
 
+  const [inquiryMessage, setInquiryMessage] = useState("");
+  const [inquirySuccess, setInquirySuccess] = useState("");
+  const [inquiryError, setInquiryError] = useState("");
+  const [sendingInquiry, setSendingInquiry] = useState(false);
+
   useEffect(() => {
     api.get(`/rooms/${id}`)
       .then((res) => setRoom(res.data.room))
@@ -80,6 +85,26 @@ function RoomDetail() {
     }
   };
 
+  const handleInquiry = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+    setInquiryError("");
+    setInquirySuccess("");
+    setSendingInquiry(true);
+    try {
+      await api.post("/inquiries", { roomId: id, message: inquiryMessage });
+      setInquirySuccess("Message sent to the owner!");
+      setInquiryMessage("");
+    } catch (err) {
+      setInquiryError(err.response?.data?.message || "Failed to send message");
+    } finally {
+      setSendingInquiry(false);
+    }
+  };
+
   if (loading) return <div className="text-center py-20">Loading...</div>;
   if (!room) return <div className="text-center py-20">Room not found</div>;
 
@@ -115,16 +140,18 @@ function RoomDetail() {
             </span>
           ))}
         </div>
-{room.location.latitude && room.location.longitude && (
-  <div className="mt-6">
-    <h3 className="font-bold mb-2 text-gray-900">Location</h3>
-    <RoomMap
-      latitude={room.location.latitude}
-      longitude={room.location.longitude}
-      title={room.title}
-    />
-  </div>
-)}
+
+        {room.location.latitude && room.location.longitude && (
+          <div className="mt-6">
+            <h3 className="font-bold mb-2 text-gray-900">Location</h3>
+            <RoomMap
+              latitude={room.location.latitude}
+              longitude={room.location.longitude}
+              title={room.title}
+            />
+          </div>
+        )}
+
         <div className="mt-8 border-t pt-6 flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-teal-800 text-white flex items-center justify-center font-bold">
             {room.owner.name.charAt(0)}
@@ -219,6 +246,31 @@ function RoomDetail() {
           >
             📅 {room.isAvailable ? "Request this place" : "Not available"}
           </button>
+
+          <div className="mt-6 border-t pt-4">
+            <p className="text-sm font-semibold text-gray-900 mb-2">Have a question?</p>
+
+            {inquiryError && <p className="text-red-600 text-xs mb-2">{inquiryError}</p>}
+            {inquirySuccess && <p className="text-green-600 text-xs mb-2">{inquirySuccess}</p>}
+
+            <form onSubmit={handleInquiry} className="flex flex-col gap-2">
+              <textarea
+                placeholder="Ask the owner something..."
+                value={inquiryMessage}
+                onChange={(e) => setInquiryMessage(e.target.value)}
+                required
+                rows="3"
+                className="border rounded-lg px-3 py-2 text-sm"
+              />
+              <button
+                type="submit"
+                disabled={sendingInquiry}
+                className="bg-gray-900 text-white text-sm font-semibold py-2 rounded-lg disabled:opacity-50"
+              >
+                {sendingInquiry ? "Sending..." : "Contact Owner"}
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 

@@ -17,6 +17,7 @@ import AdminDashboard from "../pages/AdminDashboard";
 import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 import EditRoom from "../pages/EditRoom";
+import OwnerInquiries from "../pages/OwnerInquiries";
 
 function AppRoutes() {
     return (
