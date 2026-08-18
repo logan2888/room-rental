@@ -108,6 +108,14 @@ function AppRoutes() {
       </ProtectedRoute>
     }
 />
+<Route
+    path="/inquiries"
+    element={
+      <ProtectedRoute requiredRole="owner">
+        <OwnerInquiries />
+      </ProtectedRoute>
+    }
+/>
 
                 </Route>
 

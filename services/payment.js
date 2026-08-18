@@ -3,6 +3,7 @@ const Booking = require('../models/Booking');
 const Room = require('../models/Room');
 const User = require('../models/User');
 const { sendBookingConfirmation, sendOwnerBookingNotification } = require('./email');
+const { createNotification } = require('./notification');
 
 const createPayment = async (userId, { bookingId, method }) => {
   const booking = await Booking.findById(bookingId);
@@ -59,6 +60,10 @@ const createPayment = async (userId, { bookingId, method }) => {
     sendOwnerBookingNotification(owner.email, user, booking, room)
       .then(() => console.log('Owner notification email sent'))
       .catch(err => console.error('Failed to send owner email:', err.message));
+  }
+    if (owner) {
+    createNotification(owner._id, `New booking on "${room.title}" from ${user.name}`, `/owner-bookings`)
+      .catch(err => console.error('Failed to create notification:', err.message));
   }
 
   return payment;

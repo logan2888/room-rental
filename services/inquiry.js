@@ -2,6 +2,7 @@ const Inquiry = require('../models/Inquiry');
 const Room = require('../models/Room');
 const User = require('../models/User');
 const { sendInquiryEmail } = require('./email');
+const { createNotification } = require('./notification');
 
 const createInquiry = async (senderId, { roomId, message }) => {
   const room = await Room.findById(roomId);
@@ -24,7 +25,10 @@ const createInquiry = async (senderId, { roomId, message }) => {
       .then(() => console.log('Inquiry email sent'))
       .catch(err => console.error('Failed to send inquiry email:', err.message));
   }
-
+  if (owner) {
+    createNotification(owner._id, `New inquiry on "${room.title}" from ${sender.name}`, `/inquiries`)
+      .catch(err => console.error('Failed to create notification:', err.message));
+  }
   return inquiry;
 };
 
