@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import RoomMap from "../components/RoomMap";
 
 function RoomDetail() {
   const { id } = useParams();
@@ -114,7 +115,16 @@ function RoomDetail() {
             </span>
           ))}
         </div>
-
+{room.location.latitude && room.location.longitude && (
+  <div className="mt-6">
+    <h3 className="font-bold mb-2 text-gray-900">Location</h3>
+    <RoomMap
+      latitude={room.location.latitude}
+      longitude={room.location.longitude}
+      title={room.title}
+    />
+  </div>
+)}
         <div className="mt-8 border-t pt-6 flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-teal-800 text-white flex items-center justify-center font-bold">
             {room.owner.name.charAt(0)}

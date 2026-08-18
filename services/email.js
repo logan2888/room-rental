@@ -67,5 +67,21 @@ const sendPasswordResetEmail = async (toEmail, resetLink) => {
     `
   });
 };
-
-module.exports = { sendBookingConfirmation, sendPasswordResetEmail, sendOwnerBookingNotification };
+const sendInquiryEmail = async (ownerEmail, sender, room, message) => {
+  await transporter.sendMail({
+    from: `"Room Rental" <${process.env.BREVO_SMTP_LOGIN}>`,
+    to: ownerEmail,
+    subject: `New inquiry about "${room.title}"`,
+    html: `
+      <h2>You have a new inquiry!</h2>
+      <p><strong>Room:</strong> ${room.title}</p>
+      <hr>
+      <p><strong>From:</strong> ${sender.name}</p>
+      <p><strong>Email:</strong> ${sender.email}</p>
+      <p><strong>Phone:</strong> ${sender.phone || 'Not provided'}</p>
+      <p><strong>Message:</strong></p>
+      <p>${message}</p>
+    `
+  });
+};
+module.exports = { sendBookingConfirmation, sendPasswordResetEmail, sendOwnerBookingNotification,  sendInquiryEmail };

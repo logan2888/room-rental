@@ -13,6 +13,8 @@ function CreateRoom() {
     district: "",
     address: "",
     amenities: "",
+    latitude: "",
+    longitude: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,6 +42,8 @@ function CreateRoom() {
           city: formData.city,
           district: formData.district,
           address: formData.address,
+          latitude: formData.latitude ? Number(formData.latitude) : undefined,
+          longitude: formData.longitude ? Number(formData.longitude) : undefined,
         },
         amenities: formData.amenities
           .split(",")
@@ -131,11 +135,17 @@ function CreateRoom() {
         </select>
         <input type="number" name="pricePerMonth" placeholder="Price per month (Rs.)" value={formData.pricePerMonth} onChange={handleChange} required className="border rounded px-4 py-2" />
         <DistrictSelect
-  value={formData.district}
-  onChange={(val) => setFormData({ ...formData, district: val, city: val })}
-/>
-<input type="text" name="city" placeholder="City / Area (e.g. specific place name)" value={formData.city} onChange={handleChange} required className="border rounded px-4 py-2" />
+          value={formData.district}
+          onChange={(val) => setFormData({ ...formData, district: val, city: val })}
+        />
+        <input type="text" name="city" placeholder="City / Area (e.g. specific place name)" value={formData.city} onChange={handleChange} required className="border rounded px-4 py-2" />
         <input type="text" name="address" placeholder="Full address" value={formData.address} onChange={handleChange} required className="border rounded px-4 py-2" />
+
+        <div className="grid grid-cols-2 gap-4">
+          <input type="number" step="any" name="latitude" placeholder="Latitude (e.g. 27.7172)" value={formData.latitude} onChange={handleChange} className="border rounded px-4 py-2" />
+          <input type="number" step="any" name="longitude" placeholder="Longitude (e.g. 85.3240)" value={formData.longitude} onChange={handleChange} className="border rounded px-4 py-2" />
+        </div>
+
         <input
           type="text"
           name="amenities"
