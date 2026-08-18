@@ -7,6 +7,7 @@ const { create: createPayment, uploadProof, getByBooking } = require('./payment'
 const { create: createReview, getForRoom } = require('./review');
 const { listUsers, removeUser, stats } = require('./admin');
 const { create: createInquiry, getForOwner: getInquiriesForOwner } = require('./inquiry');
+const { getMine, markRead, markAllRead } = require('./notification');
 const { protect, adminOnly } = require('../middlewares/auth');
 const upload = require('../config/multer');
 
@@ -38,6 +39,10 @@ router.get('/reviews/room/:roomId', getForRoom);
 
 router.post('/inquiries', protect, createInquiry);
 router.get('/inquiries/owner', protect, getInquiriesForOwner);
+
+router.get('/notifications', protect, getMine);
+router.put('/notifications/:id/read', protect, markRead);
+router.put('/notifications/read-all', protect, markAllRead);
 
 router.get('/admin/users', protect, adminOnly, listUsers);
 router.delete('/admin/users/:id', protect, adminOnly, removeUser);
