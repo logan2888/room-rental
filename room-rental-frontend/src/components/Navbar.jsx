@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import NotificationBell from "./NotificationBell";
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -18,58 +19,60 @@ function Navbar() {
         </Link>
 
         <div className="flex gap-6 items-center">
-          <Link to="/" className="hover:text-yellow-300 animate-bounce">
+          <Link to="/" className="hover:text-yellow-300">
             Home
           </Link>
 
-          <Link to="/rooms" className="hover:text-yellow-300 animate-bounce">
+          <Link to="/rooms" className="hover:text-yellow-300">
             Rooms
           </Link>
 
           {user ? (
             <>
               {user.role === "owner" && (
-                <Link to="/my-rooms" className="hover:text-yellow-300 animate-bounce">
+                <Link to="/my-rooms" className="hover:text-yellow-300">
                   My Rooms
                 </Link>
               )}
               {user.role === "admin" && (
-                <Link to="/admin" className="hover:text-yellow-300 animate-bounce">
+                <Link to="/admin" className="hover:text-yellow-300">
                   Admin
                 </Link>
               )}
               {user.role === "tenant" && (
-                <Link to="/my-bookings" className="hover:text-yellow-300 animate-bounce">
+                <Link to="/my-bookings" className="hover:text-yellow-300">
                   My Bookings
                 </Link>
               )}
               {user.role === "owner" && (
-                <Link to="/owner-bookings" className="hover:text-yellow-300 animate-bounce">
+                <Link to="/owner-bookings" className="hover:text-yellow-300">
                   Bookings
                 </Link>
               )}
               {user.role === "owner" && (
-                <Link to="/inquiries" className="hover:text-yellow-300 animate-bounce">
+                <Link to="/inquiries" className="hover:text-yellow-300">
                   Inquiries
                 </Link>
               )}
 
-              <span className="text-sm animate-bounce">Hi, {user.name}</span>
+              {(user.role === "owner" || user.role === "admin") && <NotificationBell />}
+
+              <span className="text-sm">Hi, {user.name}</span>
 
               <button
                 onClick={handleLogout}
-                className="bg-white text-blue-700 px-3 py-1 rounded-md hover:bg-yellow-300 animate-bounce"
+                className="bg-white text-blue-700 px-3 py-1 rounded-md hover:bg-yellow-300"
               >
                 Logout
               </button>
             </>
           ) : (
             <>
-              <Link to="/login" className="hover:text-yellow-300 animate-bounce">
+              <Link to="/login" className="hover:text-yellow-300">
                 Login
               </Link>
 
-              <Link to="/register" className="hover:text-yellow-300 animate-bounce">
+              <Link to="/register" className="hover:text-yellow-300">
                 Register
               </Link>
             </>

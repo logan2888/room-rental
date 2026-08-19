@@ -55,10 +55,10 @@ function Hero() {
             className="px-4 py-3 rounded-xl outline-none border md:border-none bg-gray-50"
           >
             <option value="">Any budget</option>
-            <option value="10000">Under Rs. 10,000</option>
-            <option value="20000">Under Rs. 20,000</option>
-            <option value="30000">Under Rs. 30,000</option>
-            <option value="50000">Under Rs. 50,000</option>
+            <option value="10000">Under Rs. 5,000</option>
+            <option value="20000">Under Rs. 10,000</option>
+            <option value="30000">Under Rs. 20,000</option>
+            <option value="50000">Under Rs. 25,000</option>
           </select>
 
           <button

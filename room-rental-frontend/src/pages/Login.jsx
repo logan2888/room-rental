@@ -18,7 +18,7 @@ function Login() {
 
     try {
       const res = await api.post("/auth/login", { email, password });
-     login(res.data.user, res.data.token);
+      login(res.data.user, res.data.token);
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");
@@ -29,10 +29,10 @@ function Login() {
 
   return (
     <div className="max-w-md mx-auto py-20 px-4">
-      <h1 className="text-4xl font-bold mb-8">Login</h1>
+      <h1 className="text-4xl font-bold mb-8 text-gray-900">Login</h1>
 
       {error && (
-        <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-xl mb-4 text-sm">
           {error}
         </div>
       )}
@@ -44,7 +44,7 @@ function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="border rounded px-4 py-2"
+          className="border rounded-xl px-4 py-2.5"
         />
 
         <input
@@ -53,29 +53,30 @@ function Login() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
-          className="border rounded px-4 py-2"
+          className="border rounded-xl px-4 py-2.5"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
+          className="bg-teal-800 hover:bg-teal-900 text-white rounded-xl px-4 py-3 font-semibold disabled:opacity-50 transition"
         >
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
 
-      <p className="mt-4 text-sm">
+      <p className="mt-4 text-sm text-gray-600">
         Don't have an account?{" "}
-        <Link to="/register" className="underline">
+        <Link to="/register" className="text-teal-800 font-medium underline">
           Register
         </Link>
       </p>
+
       <p className="mt-2 text-sm">
-  <Link to="/forgot-password" className="underline">
-    Forgot password?
-  </Link>
-</p>
+        <Link to="/forgot-password" className="text-teal-800 underline">
+          Forgot password?
+        </Link>
+      </p>
     </div>
   );
 }

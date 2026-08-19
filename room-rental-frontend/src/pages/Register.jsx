@@ -14,7 +14,7 @@ function Register() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-   const { login } = useAuth();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,7 +27,7 @@ function Register() {
 
     try {
       const res = await api.post("/auth/register", formData);
-       login(res.data.user, res.data.token);
+      login(res.data.user, res.data.token);
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
@@ -38,10 +38,10 @@ function Register() {
 
   return (
     <div className="max-w-md mx-auto py-20 px-4">
-      <h1 className="text-4xl font-bold mb-8">Register</h1>
+      <h1 className="text-4xl font-bold mb-8 text-gray-900">Register</h1>
 
       {error && (
-        <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-xl mb-4 text-sm">
           {error}
         </div>
       )}
@@ -54,7 +54,7 @@ function Register() {
           value={formData.name}
           onChange={handleChange}
           required
-          className="border rounded px-4 py-2"
+          className="border rounded-xl px-4 py-2.5"
         />
 
         <input
@@ -64,7 +64,7 @@ function Register() {
           value={formData.email}
           onChange={handleChange}
           required
-          className="border rounded px-4 py-2"
+          className="border rounded-xl px-4 py-2.5"
         />
 
         <input
@@ -74,7 +74,7 @@ function Register() {
           value={formData.password}
           onChange={handleChange}
           required
-          className="border rounded px-4 py-2"
+          className="border rounded-xl px-4 py-2.5"
         />
 
         <input
@@ -83,14 +83,14 @@ function Register() {
           placeholder="Phone"
           value={formData.phone}
           onChange={handleChange}
-          className="border rounded px-4 py-2"
+          className="border rounded-xl px-4 py-2.5"
         />
 
         <select
           name="role"
           value={formData.role}
           onChange={handleChange}
-          className="border rounded px-4 py-2"
+          className="border rounded-xl px-4 py-2.5 bg-white"
         >
           <option value="tenant">I'm looking for a room</option>
           <option value="owner">I want to list rooms</option>
@@ -99,15 +99,15 @@ function Register() {
         <button
           type="submit"
           disabled={loading}
-          className="bg-black text-white rounded px-4 py-2 disabled:opacity-50"
+          className="bg-teal-800 hover:bg-teal-900 text-white rounded-xl px-4 py-3 font-semibold disabled:opacity-50 transition"
         >
           {loading ? "Creating account..." : "Register"}
         </button>
       </form>
 
-      <p className="mt-4 text-sm">
+      <p className="mt-4 text-sm text-gray-600">
         Already have an account?{" "}
-        <Link to="/login" className="underline">
+        <Link to="/login" className="text-teal-800 font-medium underline">
           Login
         </Link>
       </p>

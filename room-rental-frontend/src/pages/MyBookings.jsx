@@ -65,21 +65,21 @@ function MyBookings() {
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-4">
-      <h1 className="text-4xl font-bold mb-8">My Bookings</h1>
+      <h1 className="text-4xl font-bold mb-8 text-gray-900">My Bookings</h1>
 
       {bookings.length === 0 ? (
-        <p>No bookings yet.</p>
+        <p className="text-gray-500">No bookings yet.</p>
       ) : (
         <div className="flex flex-col gap-4">
           {bookings.map((b) => (
-            <div key={b._id} className="border rounded-lg p-4">
-              <h2 className="font-bold text-lg">{b.room.title}</h2>
-              <p className="text-sm text-gray-600">{b.room.location.city}</p>
-              <p className="mt-1">
+            <div key={b._id} className="border rounded-2xl p-5 bg-white">
+              <h2 className="font-bold text-lg text-gray-900">{b.room.title}</h2>
+              <p className="text-sm text-gray-500">{b.room.location.city}</p>
+              <p className="mt-1 text-gray-700">
                 {new Date(b.moveInDate).toLocaleDateString()} → {new Date(b.moveOutDate).toLocaleDateString()}
               </p>
-              <p className="font-semibold mt-1">Total: Rs. {b.totalPrice}</p>
-              <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs ${
+              <p className="font-semibold mt-1 text-teal-800">Total: Rs. {b.totalPrice}</p>
+              <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium ${
                 b.status === "confirmed" ? "bg-green-100 text-green-700" :
                 b.status === "cancelled" ? "bg-red-100 text-red-700" :
                 "bg-yellow-100 text-yellow-700"
@@ -89,18 +89,18 @@ function MyBookings() {
 
               {b.status === "pending" && (
                 <div className="mt-3 flex gap-2">
-                  <button onClick={() => handlePay(b._id)} className="bg-blue-700 text-white px-4 py-2 rounded text-sm">
+                  <button onClick={() => handlePay(b._id)} className="bg-orange-400 hover:bg-orange-500 text-white px-4 py-2 rounded-xl text-sm font-semibold">
                     Pay Now
                   </button>
-                  <button onClick={() => handleCancel(b._id)} className="bg-gray-200 px-4 py-2 rounded text-sm">
+                  <button onClick={() => handleCancel(b._id)} className="bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-xl text-sm">
                     Cancel
                   </button>
                 </div>
               )}
 
               {b.status === "confirmed" && (
-                <div className="mt-3 border-t pt-3">
-                  <p className="text-sm font-medium mb-2">Upload payment proof screenshot:</p>
+                <div className="mt-4 border-t pt-4">
+                  <p className="text-sm font-medium mb-2 text-gray-700">Upload payment proof screenshot:</p>
                   <input
                     type="file"
                     accept="image/*"
@@ -110,7 +110,7 @@ function MyBookings() {
                   <button
                     onClick={() => handleProofUpload(b._id)}
                     disabled={!proofFiles[b._id] || uploadingProof[b._id]}
-                    className="bg-blue-700 text-white px-4 py-2 rounded text-sm disabled:opacity-50 block"
+                    className="bg-teal-800 hover:bg-teal-900 text-white px-4 py-2 rounded-xl text-sm font-semibold disabled:opacity-50 block"
                   >
                     {uploadingProof[b._id] ? "Uploading..." : "Upload Proof"}
                   </button>
