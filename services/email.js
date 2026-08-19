@@ -1,20 +1,30 @@
-const nodemailer = require('nodemailer');
-const transporter = nodemailer.createTransport({
-  host: 'smtp-relay.brevo.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.BREVO_SMTP_LOGIN,
-    pass: process.env.BREVO_SMTP_KEY
-  }
-});
+const axios = require('axios');
+
+const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
+
+const sendEmail = async ({ to, subject, html }) => {
+  await axios.post(
+    BREVO_API_URL,
+    {
+      sender: { name: 'Room Rental', email: process.env.BREVO_SMTP_LOGIN },
+      to: [{ email: to }],
+      subject,
+      htmlContent: html
+    },
+    {
+      headers: {
+        'api-key': process.env.BREVO_API_KEY,
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+};
 
 const sendBookingConfirmation = async (toEmail, booking, room) => {
   const moveIn = new Date(booking.moveInDate).toLocaleDateString();
   const moveOut = new Date(booking.moveOutDate).toLocaleDateString();
 
-  await transporter.sendMail({
-   from: `"Room Rental" <${process.env.BREVO_SMTP_LOGIN}>`,
+  await sendEmail({
     to: toEmail,
     subject: `Booking Confirmed - ${room.title}`,
     html: `
@@ -35,8 +45,7 @@ const sendOwnerBookingNotification = async (ownerEmail, tenant, booking, room) =
   const moveIn = new Date(booking.moveInDate).toLocaleDateString();
   const moveOut = new Date(booking.moveOutDate).toLocaleDateString();
 
-  await transporter.sendMail({
-  from: `"Room Rental" <${process.env.BREVO_SMTP_LOGIN}>`,
+  await sendEmail({
     to: ownerEmail,
     subject: `New Booking - ${room.title}`,
     html: `
@@ -55,8 +64,7 @@ const sendOwnerBookingNotification = async (ownerEmail, tenant, booking, room) =
 };
 
 const sendPasswordResetEmail = async (toEmail, resetLink) => {
-  await transporter.sendMail({
-  from: `"Room Rental" <${process.env.BREVO_SMTP_LOGIN}>`,
+  await sendEmail({
     to: toEmail,
     subject: 'Reset your Room Rental password',
     html: `
@@ -67,9 +75,9 @@ const sendPasswordResetEmail = async (toEmail, resetLink) => {
     `
   });
 };
+
 const sendInquiryEmail = async (ownerEmail, sender, room, message) => {
-  await transporter.sendMail({
-    from: `"Room Rental" <${process.env.BREVO_SMTP_LOGIN}>`,
+  await sendEmail({
     to: ownerEmail,
     subject: `New inquiry about "${room.title}"`,
     html: `
@@ -84,4 +92,5 @@ const sendInquiryEmail = async (ownerEmail, sender, room, message) => {
     `
   });
 };
-module.exports = { sendBookingConfirmation, sendPasswordResetEmail, sendOwnerBookingNotification,  sendInquiryEmail };
+
+module.exports = { sendBookingConfirmation, sendPasswordResetEmail, sendOwnerBookingNotification, sendInquiryEmail };
