@@ -77,42 +77,44 @@ function EditRoom() {
   if (loading) return <div className="text-center py-20">Loading...</div>;
 
   return (
-    <div className="max-w-2xl mx-auto py-12 px-4">
+    <div className="max-w-2xl mx-auto py-16 px-4">
       <h1 className="text-4xl font-bold mb-8 text-gray-900">Edit Room</h1>
 
       {error && (
-        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-lg mb-4 text-sm">
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-xl mb-4 text-sm">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input type="text" name="title" placeholder="Room title" value={formData.title} onChange={handleChange} required className="border rounded-xl px-4 py-2" />
-        <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="border rounded-xl px-4 py-2" rows="3" />
-        <select name="type" value={formData.type} onChange={handleChange} className="border rounded-xl px-4 py-2">
+        <input type="text" name="title" placeholder="Room title" value={formData.title} onChange={handleChange} required className="border rounded-xl px-4 py-2.5" />
+        <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="border rounded-xl px-4 py-2.5" rows="3" />
+
+        <select name="type" value={formData.type} onChange={handleChange} className="border rounded-xl px-4 py-2.5 bg-white">
           <option value="single">Single</option>
           <option value="shared">Shared</option>
           <option value="apartment">Apartment</option>
         </select>
-        <input type="number" name="pricePerMonth" placeholder="Price per month (Rs.)" value={formData.pricePerMonth} onChange={handleChange} required className="border rounded-xl px-4 py-2" />
+
+        <input type="number" name="pricePerMonth" placeholder="Price per month (Rs.)" value={formData.pricePerMonth} onChange={handleChange} required className="border rounded-xl px-4 py-2.5" />
 
         <DistrictSelect
           value={formData.district}
           onChange={(val) => setFormData({ ...formData, district: val, city: val })}
         />
 
-        <input type="text" name="city" placeholder="City / Area (e.g. specific place name)" value={formData.city} onChange={handleChange} required className="border rounded-xl px-4 py-2" />
-        <input type="text" name="address" placeholder="Full address" value={formData.address} onChange={handleChange} required className="border rounded-xl px-4 py-2" />
+        <input type="text" name="city" placeholder="City / Area (e.g. specific place name)" value={formData.city} onChange={handleChange} required className="border rounded-xl px-4 py-2.5" />
+        <input type="text" name="address" placeholder="Full address" value={formData.address} onChange={handleChange} required className="border rounded-xl px-4 py-2.5" />
         <input
           type="text"
           name="amenities"
           placeholder="Amenities (comma separated)"
           value={formData.amenities}
           onChange={handleChange}
-          className="border rounded-xl px-4 py-2"
+          className="border rounded-xl px-4 py-2.5"
         />
 
-        <button type="submit" disabled={saving} className="bg-teal-800 text-white rounded-xl px-4 py-2 disabled:opacity-50">
+        <button type="submit" disabled={saving} className="bg-teal-800 hover:bg-teal-900 text-white rounded-xl px-4 py-3 font-semibold disabled:opacity-50 transition">
           {saving ? "Saving..." : "Save Changes"}
         </button>
       </form>

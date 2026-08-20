@@ -79,71 +79,79 @@ function CreateRoom() {
 
   if (createdRoomId) {
     return (
-      <div className="max-w-2xl mx-auto py-12 px-4">
-        <h1 className="text-3xl font-bold mb-4">Room created! Now add a photo</h1>
+      <div className="max-w-2xl mx-auto py-16 px-4">
+        <h1 className="text-3xl font-bold mb-2 text-gray-900">Room created! 🎉</h1>
+        <p className="text-gray-500 mb-6">Now add a photo to attract more tenants.</p>
 
         {error && (
-          <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+          <div className="bg-red-100 text-red-700 px-4 py-2 rounded-xl mb-4 text-sm">
             {error}
           </div>
         )}
 
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImageFile(e.target.files[0])}
-          className="mb-4"
-        />
+        <div className="border rounded-2xl p-6 bg-white">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files[0])}
+            className="mb-4 text-sm"
+          />
 
-        <div className="flex gap-2">
-          <button
-            onClick={handleImageUpload}
-            disabled={!imageFile || uploading}
-            className="bg-blue-700 text-white px-4 py-2 rounded disabled:opacity-50"
-          >
-            {uploading ? "Uploading..." : "Upload Photo"}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleImageUpload}
+              disabled={!imageFile || uploading}
+              className="bg-teal-800 hover:bg-teal-900 text-white px-5 py-2.5 rounded-xl text-sm font-semibold disabled:opacity-50"
+            >
+              {uploading ? "Uploading..." : "Upload Photo"}
+            </button>
 
-          <button
-            onClick={() => navigate("/my-rooms")}
-            className="bg-gray-200 px-4 py-2 rounded"
-          >
-            Skip for now
-          </button>
+            <button
+              onClick={() => navigate("/my-rooms")}
+              className="bg-gray-100 hover:bg-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium"
+            >
+              Skip for now
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-12 px-4">
-      <h1 className="text-4xl font-bold mb-8">List a New Room</h1>
+    <div className="max-w-2xl mx-auto py-16 px-4">
+      <h1 className="text-4xl font-bold mb-2 text-gray-900">List a New Room</h1>
+      <p className="text-gray-500 mb-8">Fill in the details tenants need to know.</p>
 
       {error && (
-        <div className="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+        <div className="bg-red-100 text-red-700 px-4 py-2 rounded-xl mb-4 text-sm">
           {error}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input type="text" name="title" placeholder="Room title" value={formData.title} onChange={handleChange} required className="border rounded px-4 py-2" />
-        <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="border rounded px-4 py-2" rows="3" />
-        <select name="type" value={formData.type} onChange={handleChange} className="border rounded px-4 py-2">
+        <input type="text" name="title" placeholder="Room title" value={formData.title} onChange={handleChange} required className="border rounded-xl px-4 py-2.5" />
+        <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} className="border rounded-xl px-4 py-2.5" rows="3" />
+
+        <select name="type" value={formData.type} onChange={handleChange} className="border rounded-xl px-4 py-2.5 bg-white">
           <option value="single">Single</option>
           <option value="shared">Shared</option>
           <option value="apartment">Apartment</option>
         </select>
-        <input type="number" name="pricePerMonth" placeholder="Price per month (Rs.)" value={formData.pricePerMonth} onChange={handleChange} required className="border rounded px-4 py-2" />
+
+        <input type="number" name="pricePerMonth" placeholder="Price per month (Rs.)" value={formData.pricePerMonth} onChange={handleChange} required className="border rounded-xl px-4 py-2.5" />
+
         <DistrictSelect
           value={formData.district}
           onChange={(val) => setFormData({ ...formData, district: val, city: val })}
         />
-        <input type="text" name="city" placeholder="City / Area (e.g. specific place name)" value={formData.city} onChange={handleChange} required className="border rounded px-4 py-2" />
-        <input type="text" name="address" placeholder="Full address" value={formData.address} onChange={handleChange} required className="border rounded px-4 py-2" />
+
+        <input type="text" name="city" placeholder="City / Area (e.g. specific place name)" value={formData.city} onChange={handleChange} required className="border rounded-xl px-4 py-2.5" />
+        <input type="text" name="address" placeholder="Full address" value={formData.address} onChange={handleChange} required className="border rounded-xl px-4 py-2.5" />
 
         <div className="grid grid-cols-2 gap-4">
-          <input type="number" step="any" name="latitude" placeholder="Latitude (e.g. 27.7172)" value={formData.latitude} onChange={handleChange} className="border rounded px-4 py-2" />
-          <input type="number" step="any" name="longitude" placeholder="Longitude (e.g. 85.3240)" value={formData.longitude} onChange={handleChange} className="border rounded px-4 py-2" />
+          <input type="number" step="any" name="latitude" placeholder="Latitude (e.g. 27.7172)" value={formData.latitude} onChange={handleChange} className="border rounded-xl px-4 py-2.5" />
+          <input type="number" step="any" name="longitude" placeholder="Longitude (e.g. 85.3240)" value={formData.longitude} onChange={handleChange} className="border rounded-xl px-4 py-2.5" />
         </div>
 
         <input
@@ -152,10 +160,10 @@ function CreateRoom() {
           placeholder="Amenities (comma separated, e.g. wifi, water supply, parking)"
           value={formData.amenities}
           onChange={handleChange}
-          className="border rounded px-4 py-2"
+          className="border rounded-xl px-4 py-2.5"
         />
 
-        <button type="submit" disabled={loading} className="bg-blue-700 text-white rounded px-4 py-2 disabled:opacity-50">
+        <button type="submit" disabled={loading} className="bg-teal-800 hover:bg-teal-900 text-white rounded-xl px-4 py-3 font-semibold disabled:opacity-50 transition">
           {loading ? "Creating..." : "List Room"}
         </button>
       </form>
