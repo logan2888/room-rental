@@ -25,8 +25,18 @@ const createBooking = async (userId, { roomId, moveInDate, moveOutDate }) => {
   if (overlapping) {
     throw new Error('Room is already booked for these dates');
   }
-  const months = Math.ceil((outDate - inDate) / (1000 * 60 * 60 * 24 * 30));
-  const totalPrice = months * room.pricePerMonth;
+  const totalDays = Math.ceil(
+  (outDate - inDate) / (1000 * 60 * 60 * 24)
+);
+
+const fullMonths = Math.floor(totalDays / 30);
+const remainingDays = totalDays % 30;
+
+const dailyRate = room.pricePerMonth / 30;
+
+const totalPrice =
+  (fullMonths * room.pricePerMonth) +
+  (remainingDays * dailyRate);
   const booking = await Booking.create({
     user: userId,
     room: roomId,
