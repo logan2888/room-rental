@@ -6,7 +6,7 @@ const sendEmail = async ({ to, subject, html }) => {
   await axios.post(
     BREVO_API_URL,
     {
-      sender: { name: 'Room Rental', email: process.env.BREVO_SMTP_LOGIN },
+      sender: { name: 'Room Rental', email: 'rijankhatri536@gmail.com' },
       to: [{ email: to }],
       subject,
       htmlContent: html
