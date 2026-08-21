@@ -34,5 +34,17 @@ const getStats = async () => {
     totalPlatformRevenue: totalRevenue[0]?.total || 0
   };
 };
+const Room = require('../models/Room');
 
-module.exports = { getAllUsers, deleteUser, getStats };
+const getAllRoomsAdmin = async () => {
+  return Room.find().populate('owner', 'name email');
+};
+
+const deleteRoomAdmin = async (roomId) => {
+  const room = await Room.findById(roomId);
+  if (!room) throw new Error('Room not found');
+  await room.deleteOne();
+  return { message: 'Room deleted by admin' };
+};
+
+module.exports = { getAllUsers, deleteUser, getStats, getAllRoomsAdmin, deleteRoomAdmin };
