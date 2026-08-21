@@ -4,16 +4,19 @@ import api from "../services/api";
 function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
+  const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       api.get("/admin/stats"),
       api.get("/admin/users"),
+      api.get("/admin/rooms"),
     ])
-      .then(([statsRes, usersRes]) => {
+      .then(([statsRes, usersRes, roomsRes]) => {
         setStats(statsRes.data);
         setUsers(usersRes.data.users);
+        setRooms(roomsRes.data.rooms);
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
@@ -26,6 +29,16 @@ function AdminDashboard() {
       setUsers(users.filter((u) => u._id !== id));
     } catch (err) {
       alert(err.response?.data?.message || "Failed to delete user");
+    }
+  };
+
+  const handleDeleteRoom = async (id, title) => {
+    if (!confirm(`Delete room "${title}"? This cannot be undone.`)) return;
+    try {
+      await api.delete(`/admin/rooms/${id}`);
+      setRooms(rooms.filter((r) => r._id !== id));
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to delete room");
     }
   };
 
@@ -48,7 +61,7 @@ function AdminDashboard() {
 
       <h2 className="text-2xl font-bold mb-4 text-gray-900">All Users</h2>
 
-      <div className="overflow-x-auto border rounded-2xl">
+      <div className="overflow-x-auto border rounded-2xl mb-12">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 text-left">
             <tr>
@@ -87,6 +100,48 @@ function AdminDashboard() {
                       Delete
                     </button>
                   )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 className="text-2xl font-bold mb-4 text-gray-900">All Rooms</h2>
+
+      <div className="overflow-x-auto border rounded-2xl">
+        <table className="w-full text-sm">
+          <thead className="bg-gray-50 text-left">
+            <tr>
+              <th className="px-4 py-3">Title</th>
+              <th className="px-4 py-3">Owner</th>
+              <th className="px-4 py-3">City</th>
+              <th className="px-4 py-3">Price</th>
+              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {rooms.map((r) => (
+              <tr key={r._id} className="border-t">
+                <td className="px-4 py-3 font-medium text-gray-900">{r.title}</td>
+                <td className="px-4 py-3 text-gray-600">{r.owner?.name || "Unknown"}</td>
+                <td className="px-4 py-3 text-gray-600">{r.location?.city}</td>
+                <td className="px-4 py-3 text-gray-600">Rs. {r.pricePerMonth}</td>
+                <td className="px-4 py-3">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    r.isAvailable ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                  }`}>
+                    {r.isAvailable ? "Available" : "Not available"}
+                  </span>
+                </td>
+                <td className="px-4 py-3">
+                  <button
+                    onClick={() => handleDeleteRoom(r._id, r.title)}
+                    className="text-red-600 hover:underline text-xs"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
