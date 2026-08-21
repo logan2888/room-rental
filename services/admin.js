@@ -34,7 +34,7 @@ const getStats = async () => {
     totalPlatformRevenue: totalRevenue[0]?.total || 0
   };
 };
-const Room = require('../models/Room');
+
 
 const getAllRoomsAdmin = async () => {
   return Room.find().populate('owner', 'name email');
