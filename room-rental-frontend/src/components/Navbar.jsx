@@ -26,6 +26,13 @@ function Navbar() {
           <Link to="/rooms" className="hover:text-yellow-300">
             Rooms
           </Link>
+          <Link to="/about" className="hover:text-yellow-300">
+  About
+</Link>
+
+<Link to="/contact" className="hover:text-yellow-300">
+  Contact
+</Link>
 
           {user ? (
             <>

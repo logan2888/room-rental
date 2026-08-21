@@ -18,6 +18,8 @@ import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 import EditRoom from "../pages/EditRoom";
 import OwnerInquiries from "../pages/OwnerInquiries";
+import About from "../pages/About";
+import Contact from "../pages/Contact";
 
 function AppRoutes() {
     return (
@@ -100,6 +102,8 @@ function AppRoutes() {
       </ProtectedRoute>
     }
 />
+<Route path="/about" element={<About />} />
+<Route path="/contact" element={<Contact />} />
 <Route
     path="/owner-bookings"
     element={
