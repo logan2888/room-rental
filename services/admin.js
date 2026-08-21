@@ -46,5 +46,37 @@ const deleteRoomAdmin = async (roomId) => {
   await room.deleteOne();
   return { message: 'Room deleted by admin' };
 };
+const Booking = require('../models/Booking');
 
-module.exports = { getAllUsers, deleteUser, getStats, getAllRoomsAdmin, deleteRoomAdmin };
+const getAllBookingsAdmin = async () => {
+  const bookings = await Booking.find()
+    .populate('room', 'title')
+    .populate('user', 'name email')
+    .sort({ createdAt: -1 });
+
+  const bookingsWithPayments = await Promise.all(
+    bookings.map(async (booking) => {
+      const payment = await Payment.findOne({ booking: booking._id });
+      return { ...booking.toObject(), payment };
+    })
+  );
+
+  return bookingsWithPayments;
+};
+
+const getRevenueChartData = async () => {
+  const payments = await Payment.aggregate([
+    { $match: { status: 'completed' } },
+    {
+      $group: {
+        _id: { $dateToString: { format: '%Y-%m', date: '$createdAt' } },
+        revenue: { $sum: '$platformFee' }
+      }
+    },
+    { $sort: { _id: 1 } }
+  ]);
+
+  return payments.map(p => ({ month: p._id, revenue: p.revenue }));
+};
+
+module.exports = { getAllUsers, deleteUser, getStats, getAllRoomsAdmin, deleteRoomAdmin, getAllBookingsAdmin, getRevenueChartData };

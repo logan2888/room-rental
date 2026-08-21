@@ -1,4 +1,4 @@
-const { getAllUsers, deleteUser, getStats, getAllRoomsAdmin, deleteRoomAdmin } = require('../services/admin');
+const { getAllUsers, deleteUser, getStats, getAllRoomsAdmin, deleteRoomAdmin, getAllBookingsAdmin, getRevenueChartData } = require('../services/admin');
 
 const listUsers = async (req, res) => {
   try {
@@ -44,5 +44,22 @@ const removeRoom = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+const listBookings = async (req, res) => {
+  try {
+    const bookings = await getAllBookingsAdmin();
+    res.status(200).json({ count: bookings.length, bookings });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
-module.exports = { listUsers, removeUser, stats, listRooms, removeRoom };
+const revenueChart = async (req, res) => {
+  try {
+    const data = await getRevenueChartData();
+    res.status(200).json({ data });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { listUsers, removeUser, stats, listRooms, removeRoom, listBooking, revenueChart };

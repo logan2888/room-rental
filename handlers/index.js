@@ -5,7 +5,7 @@ const { create, getAll, getOne, update, remove, getMyRooms, uploadImage, deleteI
 const { create: createBooking, getMyBookings, cancel: cancelBooking, getForOwner: getBookingsForOwner } = require('./booking');
 const { create: createPayment, uploadProof, getByBooking } = require('./payment');
 const { create: createReview, getForRoom } = require('./review');
-const { listUsers, removeUser, stats, listRooms, removeRoom } = require('./admin');
+const { listUsers, removeUser, stats, listRooms, removeRoom, listBookings, revenueChart } = require('./admin');
 const { create: createInquiry, getForOwner: getInquiriesForOwner } = require('./inquiry');
 const { getMine, markRead, markAllRead } = require('./notification');
 const { protect, adminOnly } = require('../middlewares/auth');
@@ -49,5 +49,7 @@ router.delete('/admin/users/:id', protect, adminOnly, removeUser);
 router.get('/admin/stats', protect, adminOnly, stats);
 router.get('/admin/rooms', protect, adminOnly, listRooms);
 router.delete('/admin/rooms/:id', protect, adminOnly, removeRoom);
+router.get('/admin/bookings', protect, adminOnly, listBookings);
+router.get('/admin/revenue-chart', protect, adminOnly, revenueChart);
 
 module.exports = router;
